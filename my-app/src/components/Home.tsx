@@ -1,232 +1,543 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { 
-  ShieldCheck, Zap, Lock, ArrowRight, 
-  Sparkles, Sun, Moon, Star, ChevronDown, 
-  MessageSquare, Users, Shield, Ghost 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
+import {
+  ShieldCheck,
+  Zap,
+  Lock,
+  ArrowRight,
+  Sparkles,
+  Sun,
+  Moon,
+  Star,
+  ChevronDown,
+  MessageSquare,
+  Users,
+  Shield,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
+type FAQ = {
+  q: string;
+  a: string;
+};
+
+const stats = [
+  { val: "12M+", label: "Messages Sent" },
+  { val: "500K+", label: "Daily Users" },
+  { val: "Privacy", label: "A Core Priority" },
+  { val: "User First", label: "Design Philosophy" },
+];
+
+const features = [
+  {
+    title: "Ghost Mode",
+    desc: "Share your feedback link and let people send messages without displaying their identity in the message.",
+    icon: <Lock className="h-10 w-10" />,
+  },
+  {
+    title: "Fast Delivery",
+    desc: "A streamlined messaging experience designed to help feedback reach your inbox quickly.",
+    icon: <Zap className="h-10 w-10" />,
+  },
+  {
+    title: "Safer Conversations",
+    desc: "Build a more respectful feedback experience with appropriate moderation and abuse-prevention controls.",
+    icon: <ShieldCheck className="h-10 w-10" />,
+  },
+];
+
+const testimonials = [
+  {
+    user: "Aman Gupta",
+    role: "Creator",
+    text: "Anonymous feedback gives me another way to understand what my audience thinks.",
+    gradient: "from-blue-400 to-indigo-500",
+  },
+  {
+    user: "Priya Singh",
+    role: "Student",
+    text: "The clean interface makes sharing my feedback link simple and convenient.",
+    gradient: "from-purple-400 to-pink-500",
+  },
+  {
+    user: "Rohan X.",
+    role: "Developer",
+    text: "I like having a dedicated place to collect feedback and manage messages.",
+    gradient: "from-green-400 to-cyan-500",
+  },
+];
+
+const faqs: FAQ[] = [
+  {
+    q: "Is my identity really hidden?",
+    a: "The app is designed for anonymous feedback, but actual anonymity depends on its implementation, server logs, and privacy policy. Avoid including identifying information in your messages.",
+  },
+  {
+    q: "Can I block specific people?",
+    a: "Available controls depend on the features implemented in your account. Moderation, reporting, and rate limiting can help manage unwanted messages.",
+  },
+  {
+    q: "How do I add the link to my bio?",
+    a: "Open your dashboard, copy your unique feedback link, then paste it into the website or bio field on your social media profile.",
+  },
+  {
+    q: "Is MysticMsg free?",
+    a: "You can start using the available features according to the application's current plan and usage limits.",
+  },
+];
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 40 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.15 },
+  transition: {
+    duration: 0.7,
+    ease: "easeOut" as const,
+  },
+};
 
 export default function FullHomePage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
-  // Hydration fix
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const isDark = theme === 'dark';
+  // Avoid rendering theme-dependent content before hydration.
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-[#030712]">
+        <div className="mx-auto max-w-7xl px-6 py-32">
+          <div className="mx-auto h-10 max-w-2xl animate-pulse rounded-xl bg-white/5" />
+          <div className="mx-auto mt-6 h-24 max-w-3xl animate-pulse rounded-xl bg-white/5" />
+        </div>
+      </main>
+    );
+  }
 
-  // Animation Variants
-  const fadeInUp = {
-    initial: { opacity: 0, y: 40 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.7, ease: "easeOut" }
-  };
+  const isDark = theme === "dark";
+
+  const surface = isDark
+    ? "border-white/10 bg-white/[0.03]"
+    : "border-slate-200 bg-white";
+
+  const mutedText = isDark ? "text-slate-300" : "text-slate-600";
 
   return (
-    <div className={`relative min-h-screen transition-colors duration-700 font-sans ${isDark ? 'bg-[#030712] text-white' : 'bg-white text-slate-900'}`}>
-      
-      {/* --- 1. FLOATING THEME TOGGLE --- */}
-      <div className="fixed top-6 right-6 z-50">
+    <main
+      className={`relative min-h-screen overflow-x-clip font-sans transition-colors duration-500 ${
+        isDark
+          ? "bg-[#030712] text-white"
+          : "bg-white text-slate-900"
+      }`}
+    >
+      {/* Theme toggle */}
+      <div className="fixed right-4 top-4 z-50 sm:right-6 sm:top-6">
         <Button
           variant="outline"
           size="icon"
-          className={`rounded-full w-14 h-14 shadow-2xl backdrop-blur-xl border-white/20 transition-all hover:scale-110 active:scale-95`}
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
+          className={`h-12 w-12 rounded-full border-white/20 shadow-2xl backdrop-blur-xl transition-transform hover:scale-110 sm:h-14 sm:w-14 ${
+            isDark ? "bg-slate-900/80" : "bg-white/90"
+          }`}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
         >
-          {isDark ? <Sun className="text-yellow-400 w-6 h-6" /> : <Moon className="text-blue-600 w-6 h-6" />}
+          {isDark ? (
+            <Sun className="h-6 w-6 text-yellow-400" />
+          ) : (
+            <Moon className="h-6 w-6 text-blue-600" />
+          )}
         </Button>
       </div>
 
-      {/* --- 2. DYNAMIC BACKGROUND --- */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className={`absolute top-0 w-full h-[1000px] ${isDark ? 'bg-gradient-to-b from-blue-600/10 via-transparent to-transparent' : 'bg-gradient-to-b from-blue-50 to-transparent'}`} />
-        {isDark && (
-          <div className="absolute inset-0 bg-[url('https://youtu.be/OgS1ZWZItno?si=cRvaeZfsvbqt4i03')] opacity-20 brightness-100 contrast-150" />
-        )}
-        <div className={`absolute inset-0 bg-[linear-gradient(to_right,${isDark ? '#80808012' : '#00000005'}_1px,transparent_1px),linear-gradient(to_bottom,${isDark ? '#80808012' : '#00000005'}_1px,transparent_1px)] bg-[size:40px_40px]`} />
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className={`absolute top-0 h-[800px] w-full ${
+            isDark
+              ? "bg-gradient-to-b from-blue-600/15 via-indigo-500/5 to-transparent"
+              : "bg-gradient-to-b from-blue-100 to-transparent"
+          }`}
+        />
+
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: `linear-gradient(to right, ${
+              isDark ? "#80808012" : "#00000008"
+            } 1px, transparent 1px), linear-gradient(to bottom, ${
+              isDark ? "#80808012" : "#00000008"
+            } 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        <div
+          className={`absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full blur-[120px] sm:h-[500px] sm:w-[500px] ${
+            isDark ? "bg-blue-600/10" : "bg-blue-400/15"
+          }`}
+        />
       </div>
 
-      {/* --- 3. HERO SECTION --- */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 flex flex-col items-center">
-        <div className="container mx-auto px-6 text-center">
+      {/* Hero */}
+      <section className="relative flex min-h-[85svh] items-center justify-center px-4 pb-20 pt-28 sm:px-6 sm:pt-36 lg:min-h-screen">
+        <div className="container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={`inline-flex items-center gap-2 px-6 py-2 rounded-full mb-10 border shadow-sm ${isDark ? 'bg-white/5 border-white/10 text-blue-400' : 'bg-blue-50 border-blue-100 text-blue-600'}`}
+            transition={{ duration: 0.6 }}
+            className={`mx-auto mb-8 inline-flex max-w-full items-center gap-2 rounded-full border px-4 py-2 shadow-sm sm:mb-10 sm:px-6 ${
+              isDark
+                ? "border-white/10 bg-white/5 text-blue-400"
+                : "border-blue-100 bg-blue-50 text-blue-600"
+            }`}
           >
-            <Sparkles className="w-4 h-4 animate-pulse" />
-            <span className="text-sm font-black uppercase tracking-[0.2em]">MysticMsg v2.0 is Live</span>
+            <Sparkles className="h-4 w-4 shrink-0 animate-pulse" />
+            <span className="text-xs font-black uppercase tracking-wider sm:text-sm sm:tracking-[0.2em]">
+              MysticMsg · Anonymous Feedback
+            </span>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             {...fadeInUp}
-            className="text-6xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] lg:max-w-5xl mx-auto"
+            className="mx-auto mb-8 max-w-5xl text-5xl font-black leading-[0.95] tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl"
           >
-            Honest Talk. <br />
-            <span className={`bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-white via-blue-400 to-white/40' : 'from-blue-600 via-indigo-600 to-purple-600'}`}>
+            Honest Talk.
+            <br />
+            <span
+              className={`bg-gradient-to-r bg-clip-text text-transparent ${
+                isDark
+                  ? "from-white via-blue-400 to-indigo-500"
+                  : "from-blue-600 via-indigo-600 to-purple-600"
+              }`}
+            >
               Zero Labels.
             </span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             {...fadeInUp}
-            className={`max-w-2xl mx-auto text-lg md:text-2xl mb-12 font-medium leading-relaxed opacity-70`}
+            className={`mx-auto mb-10 max-w-2xl text-base font-medium leading-relaxed opacity-75 sm:mb-12 sm:text-xl md:text-2xl ${mutedText}`}
           >
-            Share your secret link, receive anonymous messages, and discover what people truly think about you. No tracking, no drama.
+            Share your secret link, receive anonymous messages, and discover
+            new perspectives through honest feedback.
           </motion.p>
-          
-          <motion.div {...fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="/dashbord">
-              <Button size="lg" className={`h-20 px-12 rounded-[2rem] text-xl font-black transition-all shadow-2xl ${isDark ? 'bg-white text-black hover:bg-blue-50 hover:-translate-y-2' : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105'}`}>
-                Start Now — Free <ArrowRight className="ml-3 w-6 h-6" />
+
+          <motion.div
+            {...fadeInUp}
+            className="flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center sm:gap-6"
+          >
+            <Link href="/dashbord" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                className={`h-14 w-full rounded-2xl px-7 text-base font-black shadow-2xl transition-all sm:h-20 sm:w-auto sm:rounded-[2rem] sm:px-12 sm:text-xl ${
+                  isDark
+                    ? "bg-white text-black hover:-translate-y-1 hover:bg-blue-50"
+                    : "bg-blue-600 text-white hover:-translate-y-1 hover:bg-blue-700"
+                }`}
+              >
+                Open Dashboard
+                <ArrowRight className="ml-3 h-5 w-5 sm:h-6 sm:w-6" />
               </Button>
             </Link>
-            <Link href={'/dkh'}>
-            <Button variant="outline" className="h-20 px-10 rounded-[2rem] text-lg font-bold border-slate-200 dark:border-white/10">
-               Here Are Demo Videos Section.
-            </Button>
+
+            <Link href="/dkh" className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                className={`h-14 w-full rounded-2xl border px-6 text-base font-bold sm:h-20 sm:w-auto sm:rounded-[2rem] sm:px-8 ${
+                  isDark
+                    ? "border-white/10 bg-white/5 hover:bg-white/10"
+                    : "border-slate-200 bg-white hover:bg-slate-50"
+                }`}
+              >
+                <MessageSquare className="mr-2 h-5 w-5" />
+                Demo Videos
+              </Button>
             </Link>
           </motion.div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500 sm:gap-5 sm:text-sm">
+            <span className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-indigo-400" />
+              Feedback-focused
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-indigo-400" />
+              Made for conversations
+            </span>
+          </div>
         </div>
       </section>
 
-      {/* --- 4. STATS BAR --- */}
-      <section className="py-20 container mx-auto px-6">
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 p-12 rounded-[3.5rem] border ${isDark ? 'bg-white/[0.02] border-white/10' : 'bg-slate-50 border-slate-100 shadow-xl shadow-slate-200/50'}`}>
-          {stats.map((s, i) => (
-            <div key={i} className="text-center">
-              <h4 className="text-4xl md:text-5xl font-black mb-1">{s.val}</h4>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">{s.label}</p>
+      {/* Stats */}
+      <section className="container mx-auto px-4 py-12 sm:px-6 sm:py-20">
+        <motion.div
+          {...fadeInUp}
+          className={`grid grid-cols-2 gap-6 rounded-3xl border p-6 sm:gap-8 sm:rounded-[3rem] sm:p-12 md:grid-cols-4 ${surface}`}
+        >
+          {stats.map((stat) => (
+            <div key={stat.label} className="min-w-0 text-center">
+              <h4 className="mb-2 break-words text-2xl font-black sm:text-4xl md:text-5xl">
+                {stat.val}
+              </h4>
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-50 sm:text-xs sm:tracking-[0.2em]">
+                {stat.label}
+              </p>
             </div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-      {/* --- 5. FEATURES SECTION --- */}
-      <section className="py-32 container mx-auto px-6">
-        <div className="text-center mb-20 space-y-4">
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Purely Anonymous.</h2>
-          <p className="opacity-50 text-lg">We've built the most secure feedback ecosystem on the planet.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((f, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -15 }}
-              className={`p-12 rounded-[3rem] border transition-all duration-500 ${isDark ? 'bg-white/[0.02] border-white/10 hover:bg-white/[0.05]' : 'bg-white border-slate-100 shadow-2xl shadow-slate-100'}`}
+      {/* Features */}
+      <section className="container mx-auto px-4 py-20 sm:px-6 sm:py-32">
+        <motion.div {...fadeInUp} className="mb-12 space-y-4 text-center sm:mb-20">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-blue-500">
+            What Makes Us Different
+          </p>
+
+          <h2 className="text-3xl font-black tracking-tight sm:text-5xl md:text-6xl">
+            Feedback, Reimagined.
+          </h2>
+
+          <p className={`mx-auto max-w-2xl text-base sm:text-lg ${mutedText}`}>
+            A simple way to collect messages, explore feedback, and make
+            conversations more approachable.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 gap-5 sm:gap-8 md:grid-cols-3">
+          {features.map((feature, index) => (
+            <motion.article
+              key={feature.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
+              className={`rounded-3xl border p-7 transition-colors duration-300 sm:rounded-[2.5rem] sm:p-10 ${
+                isDark
+                  ? "bg-white/[0.02] hover:bg-white/[0.05]"
+                  : "bg-white shadow-xl shadow-slate-200/40 hover:border-blue-200"
+              } ${surface}`}
             >
-              <div className={`mb-8 p-5 w-fit rounded-3xl ${isDark ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-600 text-white shadow-lg shadow-blue-200'}`}>
-                {f.icon}
+              <div
+                className={`mb-7 w-fit rounded-2xl p-4 sm:mb-8 sm:rounded-3xl sm:p-5 ${
+                  isDark
+                    ? "bg-blue-500/10 text-blue-400"
+                    : "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                }`}
+              >
+                {feature.icon}
               </div>
-              <h3 className="text-2xl font-black mb-4 tracking-tight">{f.title}</h3>
-              <p className="text-base leading-relaxed opacity-60">{f.desc}</p>
-            </motion.div>
+
+              <h3 className="mb-4 text-xl font-black tracking-tight sm:text-2xl">
+                {feature.title}
+              </h3>
+
+              <p className={`text-sm leading-relaxed sm:text-base ${mutedText}`}>
+                {feature.desc}
+              </p>
+            </motion.article>
           ))}
         </div>
       </section>
 
-      {/* --- 6. TESTIMONIALS --- */}
-      <section className={`py-32 ${isDark ? 'bg-blue-600/[0.03]' : 'bg-slate-50'}`}>
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter max-w-md">Loved by Creators Worldwide.</h2>
-            <div className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full font-bold">
-              <Star className="w-5 h-5 fill-primary" /> 4.9/5 Rating
+      {/* Testimonials */}
+      <section
+        className={`py-20 sm:py-32 ${
+          isDark ? "bg-blue-600/[0.03]" : "bg-slate-50"
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="mb-10 flex flex-col items-start justify-between gap-6 sm:mb-16 md:flex-row md:items-end">
+            <div>
+              <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-blue-500">
+                Community
+              </p>
+              <h2 className="max-w-xl text-3xl font-black tracking-tight sm:text-5xl">
+                A New Way to Share Feedback.
+              </h2>
+            </div>
+
+            <div
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold ${
+                isDark
+                  ? "bg-white/5 text-slate-300"
+                  : "bg-white text-slate-700 shadow-sm"
+              }`}
+            >
+              <Star className="h-5 w-5 text-yellow-400" />
+              Community feedback
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, i) => (
-              <div key={i} className={`p-8 rounded-[2.5rem] border ${isDark ? 'bg-[#0a0f1d] border-white/5' : 'bg-white border-slate-100 shadow-md'}`}>
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3 sm:gap-8">
+            {testimonials.map((testimonial) => (
+              <motion.article
+                key={testimonial.user}
+                {...fadeInUp}
+                className={`rounded-3xl border p-6 sm:rounded-[2.5rem] sm:p-8 ${surface}`}
+              >
+                <div className="mb-6 flex gap-1">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Star
+                      key={index}
+                      className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                    />
+                  ))}
                 </div>
-                <p className="text-lg font-medium mb-8 italic opacity-80">"{t.text}"</p>
+
+                <p className={`mb-8 text-base italic leading-relaxed ${mutedText}`}>
+                  &ldquo;{testimonial.text}&rdquo;
+                </p>
+
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${t.gradient}`} />
+                  <div
+                    className={`h-12 w-12 shrink-0 rounded-full bg-gradient-to-br ${testimonial.gradient}`}
+                  />
+
                   <div>
-                    <h5 className="font-black text-sm">{t.user}</h5>
-                    <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest">{t.role}</p>
+                    <h5 className="font-black">{testimonial.user}</h5>
+                    <p className="text-xs font-bold uppercase tracking-widest opacity-50">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </div>
-              </div>
+              </motion.article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- 7. FAQ SECTION --- */}
-      <section className="py-32 container mx-auto px-6 max-w-4xl">
-        <h2 className="text-4xl font-black text-center mb-16 tracking-tighter">Common Questions</h2>
+      {/* FAQ */}
+      <section className="container mx-auto max-w-4xl px-4 py-20 sm:px-6 sm:py-32">
+        <motion.div {...fadeInUp} className="mb-10 text-center sm:mb-16">
+          <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-blue-500">
+            Got Questions?
+          </p>
+
+          <h2 className="text-3xl font-black tracking-tight sm:text-5xl">
+            Common Questions
+          </h2>
+        </motion.div>
+
         <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <motion.div 
-              key={i} 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              className={`p-8 rounded-3xl border cursor-pointer group transition-all ${isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 hover:border-blue-400'}`}
-            >
-              <div className="flex justify-between items-center">
-                <h4 className="text-xl font-bold">{faq.q}</h4>
-                <ChevronDown className="w-6 h-6 opacity-30 group-hover:opacity-100 transition-opacity" />
-              </div>
-            </motion.div>
-          ))}
+          {faqs.map((faq, index) => {
+            const isOpen = openFAQ === index;
+
+            return (
+              <motion.div
+                key={faq.q}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.35 }}
+                className={`overflow-hidden rounded-2xl border transition-colors sm:rounded-3xl ${
+                  isDark
+                    ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+                    : "border-slate-200 bg-white hover:border-blue-300"
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFAQ(isOpen ? null : index)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-7"
+                >
+                  <span className="text-base font-bold sm:text-lg">
+                    {faq.q}
+                  </span>
+
+                  <ChevronDown
+                    className={`h-5 w-5 shrink-0 opacity-60 transition-transform duration-300 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <p className={`px-5 pb-6 text-sm leading-relaxed sm:px-7 sm:text-base ${mutedText}`}>
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
-      {/* --- 8. FINAL CTA --- */}
-      <section className="py-40 container mx-auto px-6 text-center">
-        <motion.div 
-          whileInView={{ scale: [0.95, 1] }}
-          className={`p-16 md:p-24 rounded-[4rem] relative overflow-hidden ${isDark ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}
+      {/* Final CTA */}
+      <section className="container mx-auto px-4 py-16 sm:px-6 sm:py-24">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className={`relative overflow-hidden rounded-3xl p-7 text-center sm:rounded-[3rem] sm:p-12 md:rounded-[4rem] md:p-24 ${
+            isDark
+              ? "bg-blue-600 text-white"
+              : "bg-slate-900 text-white"
+          }`}
         >
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 blur-[100px] rounded-full -mr-20 -mt-20" />
-          <h2 className="text-5xl md:text-7xl font-black mb-10 relative z-10 leading-tight">Ready to dive in? <br /> It's 100% free.</h2>
-          <Link href="/sign-up">
-            <Button size="lg" variant="secondary" className="h-20 px-16 rounded-full text-2xl font-black hover:scale-110 transition-transform relative z-10 shadow-2xl">
-              Create Your Ghost Profile
-            </Button>
-          </Link>
-          <p className="mt-8 opacity-60 font-medium italic">Join 50,000+ users today</p>
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-[100px] sm:h-96 sm:w-96" />
+
+          <div className="relative z-10">
+            <Sparkles className="mx-auto mb-6 h-10 w-10 text-blue-200" />
+
+            <h2 className="mb-6 text-3xl font-black leading-tight sm:mb-10 sm:text-5xl md:text-7xl">
+              Ready to Dive In?
+              <br />
+              It&apos;s Simple to Start.
+            </h2>
+
+            <p className="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-white/75 sm:mb-10 sm:text-lg">
+              Create your profile, share your feedback link, and start
+              collecting messages.
+            </p>
+
+            <Link href="/sign-up">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="h-14 max-w-full rounded-full px-6 text-sm font-black shadow-2xl transition-transform hover:scale-105 sm:h-16 sm:px-10 sm:text-lg"
+              >
+                Create Your Profile
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+
+            <p className="mt-6 text-xs font-medium text-white/60 sm:text-sm">
+              Your Voice. Your Space. Your Choice.
+            </p>
+          </div>
         </motion.div>
       </section>
 
-      {/* --- 9. FOOTER --- */}
-      
-    </div>
+      {/* Footer */}
+      <footer className="border-t border-slate-800/50 px-4 py-8 text-center sm:px-6">
+        <p className="text-xs text-slate-500 sm:text-sm">
+          © {new Date().getFullYear()} MysticMsg. Built for better conversations.
+        </p>
+      </footer>
+    </main>
   );
 }
-
-// --- DATA ---
-const stats = [
-  { val: "12M+", label: "Messages Sent" },
-  { val: "500K+", label: "Daily Users" },
-  { val: "0", label: "Data Leaks" },
-  { val: "100%", label: "Anonymity" },
-];
-
-const features = [
-  { title: "Ghost Mode", desc: "No cookies, no IP tracking, no digital footprint. You are truly a ghost on our platform.", icon: <Lock className="w-10 h-10" /> },
-  { title: "Nitro Delivery", desc: "Built on Global Edge Nodes. Messages deliver faster than a blink, no matter where you are.", icon: <Zap className="w-10 h-10" /> },
-  { title: "SafeSpace AI", desc: "Our advanced neural filters detect and block bullying before it even reaches your inbox.", icon: <ShieldCheck className="w-10 h-10" /> }
-];
-
-const testimonials = [
-  { user: "Aman Gupta", role: "Influencer", text: "MysticMsg changed how I interact with my fans. Honest feedback is a superpower!", gradient: "from-blue-400 to-indigo-500" },
-  { user: "Priya Singh", role: "Student", text: "The UI is so clean! It's the only anonymous app that doesn't feel creepy.", gradient: "from-purple-400 to-pink-500" },
-  { user: "Rohan X.", role: "Developer", text: "The security here is top-notch. Finally, an app that respects my privacy.", gradient: "from-green-400 to-cyan-500" },
-];
-
-const faqs = [
-  { q: "Is my identity really hidden?" },
-  { q: "Can I block specific people?" },
-  { q: "How do I add the link to my Bio?" },
-  { q: "Is MysticMsg free forever?" },
-];

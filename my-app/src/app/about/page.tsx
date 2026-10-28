@@ -1,208 +1,386 @@
+
 "use client";
-import React, { useRef } from "react";
+
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { 
-  ShieldAlert, MessageSquare, Zap, Ghost, Lock, Heart, 
-  EyeOff, Scale, Fingerprint, Globe, Users, Sparkles,
-  ShieldCheck, Cpu, Database, Network, Key, Layers,
-  TrendingUp, Anchor, Target, ZapOff, CheckCircle2
+import {
+  Ghost,
+  Target,
+  Anchor,
+  ZapOff,
+  CheckCircle2,
+  Fingerprint,
+  Database,
 } from "lucide-react";
 
 const AboutPage = () => {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  
-  // Parallax effects for that 3D depth feel
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
+  const philosophyCards = [
+    {
+      title: "The Problem: The Filtered Self",
+      content:
+        "People often hesitate to share honest feedback. This gap can make communication less effective and prevent meaningful improvement.",
+      icon: <ZapOff size={28} />,
+    },
+    {
+      title: "The Solution: Pure Feedback",
+      content:
+        "Anonymous feedback can help people share their perspectives more comfortably and encourage constructive conversations.",
+      icon: <CheckCircle2 size={28} />,
+    },
+    {
+      title: "The Method: Privacy by Design",
+      content:
+        "Privacy should be considered throughout the product design process. Appropriate access controls and secure data handling help protect users.",
+      icon: <Fingerprint size={28} />,
+    },
+  ];
+
+  const comparisonRows = [
+    ["Identity Privacy", "Profile-based", "Browser-level", "Designed for anonymity"],
+    ["Data Tracking", "Platform-dependent", "Browser-dependent", "Privacy-focused"],
+    ["Message Encryption", "Varies by platform", "Varies by platform", "Depends on implementation"],
+    ["Ad Targeting", "May be present", "May be present", "Product-dependent"],
+    ["Anonymity", "Account-dependent", "Limited", "Designed for anonymous feedback"],
+  ];
+
+  const technicalFeatures = [
+    {
+      title: "01. Secure Data Handling",
+      description:
+        "Protect sensitive information through appropriate access controls, secure storage, and careful handling of user data.",
+    },
+    {
+      title: "02. Session Protection",
+      description:
+        "Use secure session management, appropriate token expiry, and server-side authorization to reduce account risks.",
+    },
+    {
+      title: "03. Responsive Interface",
+      description:
+        "Build an adaptable interface that presents relevant features clearly across desktop, tablet, and mobile devices.",
+    },
+    {
+      title: "04. Reliable Infrastructure",
+      description:
+        "Design the backend and database around reliable access, sensible permissions, and maintainable application architecture.",
+    },
+  ];
+
+  const stats = [
+    { value: "Privacy", label: "By Design" },
+    { value: "Secure", label: "Data Handling" },
+    { value: "Simple", label: "User Experience" },
+    { value: "Always", label: "User Focused" },
+  ];
+
+  const faqs = [
+    {
+      q: "Can my employer find out who sent a message?",
+      a: "Anonymity depends on how the application is built and deployed. Avoid sharing identifying details in messages, and check the platform's actual privacy policy.",
+    },
+    {
+      q: "How do you handle abusive content?",
+      a: "A responsible feedback platform can use reporting, moderation, rate limits, and appropriate safeguards to help prevent misuse.",
+    },
+    {
+      q: "Is the platform open source?",
+      a: "Check the project's repository and license to confirm which components are open source.",
+    },
+    {
+      q: "How can a privacy-focused platform earn money?",
+      a: "Possible models include optional premium features, subscriptions, and business plans without relying on selling personal information.",
+    },
+  ];
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#050505] text-slate-300 selection:bg-indigo-500/30 overflow-x-hidden font-sans">
-      
-      {/* --- SECTION 1: THE ATMOSPHERIC HERO --- */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent opacity-50" />
-        
-        <motion.div style={{ y: y1 }} className="absolute top-20 right-[15%] opacity-20 hidden lg:block">
-          <Ghost size={300} strokeWidth={0.5} className="text-indigo-500" />
+    <main
+      ref={containerRef}
+      className="min-h-screen overflow-x-clip bg-[#050505] font-sans text-slate-300 selection:bg-indigo-500/30"
+    >
+      {/* SECTION 1: HERO */}
+      <section className="relative flex min-h-[90svh] flex-col items-center justify-center overflow-hidden px-4 py-24 sm:px-6 lg:min-h-screen">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-500/15 via-transparent to-transparent opacity-80" />
+
+        <motion.div
+          style={{ y: y1 }}
+          className="pointer-events-none absolute right-[8%] top-20 hidden opacity-20 lg:block"
+        >
+          <Ghost
+            size={300}
+            strokeWidth={0.5}
+            className="text-indigo-500"
+          />
         </motion.div>
 
-        <div className="relative z-10 text-center">
-          <motion.span 
-            initial={{ opacity: 0, tracking: "0.2em" }}
-            animate={{ opacity: 1, tracking: "0.5em" }}
-            className="text-indigo-400 font-mono text-xs uppercase mb-6 block"
+        <div className="relative z-10 mx-auto max-w-6xl text-center">
+          <motion.span
+            initial={{ opacity: 0, letterSpacing: "0.2em" }}
+            animate={{ opacity: 1, letterSpacing: "0.35em" }}
+            transition={{ duration: 1 }}
+            className="mb-6 block text-xs font-mono uppercase text-indigo-400 sm:text-sm"
           >
-            Encryption meets Empathy
+            Encryption Meets Empathy
           </motion.span>
-          <motion.h1 
+
+          <motion.h1
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-8xl md:text-[12rem] font-black leading-none tracking-tighter text-white"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-6xl font-black leading-[0.95] tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[12rem]"
           >
-            PURE <br /> <span className="text-indigo-600">VOICE.</span>
+            PURE
+            <br />
+            <span className="bg-gradient-to-r from-indigo-400 via-indigo-600 to-purple-500 bg-clip-text text-transparent">
+              VOICE.
+            </span>
           </motion.h1>
-          <p className="mt-8 text-slate-500 text-lg md:text-2xl max-w-3xl mx-auto font-light leading-relaxed">
-            We didn't just build a messaging app. We built a mirror for humanity. 
-            A decentralized, anonymous engine for radical growth.
-          </p>
+
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-slate-400 sm:text-xl md:text-2xl"
+          >
+            We didn&apos;t just build a messaging app. We built a space for
+            honest conversations, anonymous feedback, and meaningful growth.
+          </motion.p>
         </div>
-        
-        <motion.div 
-          animate={{ y: [0, 10, 0] }} 
+
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-600"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-600"
         >
-          <div className="w-1 h-12 rounded-full bg-gradient-to-b from-indigo-500 to-transparent" />
+          <div className="h-12 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-transparent" />
         </motion.div>
       </section>
 
-      {/* --- SECTION 2: THE PHILOSOPHY (The "Why") --- */}
-      <section className="py-32 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-start">
-        <div className="sticky top-32">
-          <h2 className="text-5xl font-bold text-white mb-8">The Psychology <br /> of The Unseen.</h2>
-          <p className="text-xl text-slate-400 mb-10 leading-loose">
-            When you know who is watching, you perform. When you are anonymous, you <strong>exist</strong>. 
-            Our platform removes the "Performance Bias" that plagues modern communication.
+      {/* SECTION 2: PHILOSOPHY */}
+      <section className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 md:py-28 lg:grid-cols-2 lg:gap-20">
+        <div className="lg:sticky lg:top-24">
+          <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-indigo-400">
+            Our Philosophy
           </p>
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="p-3 bg-indigo-500/20 rounded-lg"><Target className="text-indigo-400" /></div>
-              <div><h4 className="font-bold text-white">Focus on Content</h4><p className="text-sm">We judge ideas, not identities.</p></div>
+
+          <h2 className="mb-8 text-4xl font-bold text-white sm:text-5xl">
+            The Psychology
+            <br />
+            of the Unseen.
+          </h2>
+
+          <p className="mb-10 text-lg leading-relaxed text-slate-400 sm:text-xl sm:leading-loose">
+            When people worry about judgment, they may hold back. Thoughtfully
+            designed anonymous feedback can create more room for honest
+            perspectives and constructive conversations.
+          </p>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-lg bg-indigo-500/20 p-3">
+                <Target className="text-indigo-400" />
+              </div>
+              <div>
+                <h4 className="font-bold text-white">Focus on Content</h4>
+                <p className="text-sm text-slate-400">
+                  Understand ideas before judging identities.
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="p-3 bg-purple-500/20 rounded-lg"><Anchor className="text-purple-400" /></div>
-              <div><h4 className="font-bold text-white">Safety by Design</h4><p className="text-sm">Zero fear of professional or social fallout.</p></div>
+
+            <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-lg bg-purple-500/20 p-3">
+                <Anchor className="text-purple-400" />
+              </div>
+              <div>
+                <h4 className="font-bold text-white">Safety by Design</h4>
+                <p className="text-sm text-slate-400">
+                  Encourage respectful and constructive feedback.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-12">
-          {[
-            { title: "The Problem: The Filtered Self", content: "Most corporate and personal feedback is 60% 'politeness' and only 40% 'truth'. This gap is where companies fail and relationships rot.", icon: <ZapOff /> },
-            { title: "The Solution: Pure Feedback", content: "By severing the link between identity and input, we allow for 100% honesty. This leads to 3x faster problem solving in teams.", icon: <CheckCircle2 /> },
-            { title: "The Method: Zero-Knowledge", content: "We use cryptographic hashes so that even our engineers cannot trace a message back to you. Your privacy is protected by math, not just promises.", icon: <Fingerprint /> }
-          ].map((card, i) => (
-            <motion.div 
-              key={i}
-              whileHover={{ x: 20 }}
-              className="p-10 rounded-3xl bg-gradient-to-br from-slate-900 to-black border border-slate-800 shadow-2xl"
+        <div className="space-y-6 sm:space-y-8">
+          {philosophyCards.map((card, index) => (
+            <motion.article
+              key={card.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ x: 6 }}
+              className="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-black p-6 shadow-2xl sm:rounded-3xl sm:p-10"
             >
-              <div className="text-indigo-500 mb-6">{card.icon}</div>
-              <h3 className="text-2xl font-bold text-white mb-4">{card.title}</h3>
-              <p className="text-slate-400 leading-relaxed text-lg">{card.content}</p>
-            </motion.div>
+              <div className="mb-6 text-indigo-400">{card.icon}</div>
+              <h3 className="mb-4 text-xl font-bold text-white sm:text-2xl">
+                {card.title}
+              </h3>
+              <p className="text-base leading-relaxed text-slate-400 sm:text-lg">
+                {card.content}
+              </p>
+            </motion.article>
           ))}
         </div>
       </section>
 
-      {/* --- SECTION 3: INTERACTIVE COMPARISON TABLE --- */}
-      <section className="py-32 bg-indigo-600/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-white mb-16 text-center">How We Compare.</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+      {/* SECTION 3: COMPARISON */}
+      <section className="bg-indigo-600/5 py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="mb-4 text-center font-mono text-xs uppercase tracking-[0.3em] text-indigo-400">
+            A Different Approach
+          </p>
+
+          <h2 className="mb-12 text-center text-3xl font-bold text-white sm:mb-16 sm:text-4xl">
+            How We Compare.
+          </h2>
+
+          <div className="overflow-x-auto rounded-2xl border border-slate-800">
+            <table className="w-full min-w-[620px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-500 uppercase text-xs tracking-widest">
-                  <th className="pb-6">Feature</th>
-                  <th className="pb-6">Standard Social</th>
-                  <th className="pb-6">Incognito Mode</th>
-                  <th className="pb-6 text-indigo-400">Our Protocol</th>
+                <tr className="border-b border-slate-800 bg-white/[0.03] text-xs uppercase tracking-wider text-slate-500">
+                  <th className="p-4 sm:p-6">Feature</th>
+                  <th className="p-4 sm:p-6">Standard Social</th>
+                  <th className="p-4 sm:p-6">Incognito Mode</th>
+                  <th className="p-4 text-indigo-400 sm:p-6">Our Approach</th>
                 </tr>
               </thead>
-              <tbody className="text-slate-300">
-                {[
-                  ["Identity Privacy", "None", "Browser Only", "Military-Grade Hash"],
-                  ["Data Tracking", "Aggressive", "Standard", "Zero-Log Policy"],
-                  ["Message Encryption", "Standard", "Variable", "End-to-End PGP"],
-                  ["Ad Targeting", "Yes", "Yes", "Never"],
-                  ["Anonymity Guarantee", "0%", "20%", "100%"]
-                ].map((row, i) => (
-                  <tr key={i} className="border-b border-slate-900 hover:bg-white/5 transition-colors">
-                    <td className="py-6 font-medium text-white">{row[0]}</td>
-                    <td className="py-6">{row[1]}</td>
-                    <td className="py-6">{row[2]}</td>
-                    <td className="py-6 text-indigo-400 font-bold">{row[3]}</td>
+
+              <tbody className="text-sm text-slate-300 sm:text-base">
+                {comparisonRows.map((row) => (
+                  <tr
+                    key={row[0]}
+                    className="border-b border-slate-900 transition-colors hover:bg-white/5"
+                  >
+                    <td className="p-4 font-medium text-white sm:p-6">
+                      {row[0]}
+                    </td>
+                    <td className="p-4 sm:p-6">{row[1]}</td>
+                    <td className="p-4 sm:p-6">{row[2]}</td>
+                    <td className="p-4 font-semibold text-indigo-400 sm:p-6">
+                      {row[3]}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
+          <p className="mt-4 text-sm text-slate-500">
+            Comparisons are illustrative. Actual privacy and security depend
+            on each product&apos;s implementation and policies.
+          </p>
         </div>
       </section>
 
-      {/* --- SECTION 4: THE TECHNICAL DEEP-DIVE --- */}
-      <section className="py-32 relative overflow-hidden">
-        <motion.div style={{ y: y2 }} className="absolute -right-20 top-0 opacity-10">
-          <Database size={600} />
+      {/* SECTION 4: TECHNICAL DEEP DIVE */}
+      <section className="relative overflow-hidden py-20 md:py-32">
+        <motion.div
+          style={{ y: y2 }}
+          className="pointer-events-none absolute -right-20 top-0 opacity-[0.06]"
+        >
+          <Database size={400} className="sm:h-[600px] sm:w-[600px]" />
         </motion.div>
-        
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 relative z-10">
+
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 md:grid-cols-3">
           <div className="md:col-span-2">
-            <h2 className="text-6xl font-black text-white mb-8 tracking-tighter">THE TECH <br /> BEHIND THE MASK.</h2>
-            <div className="grid sm:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <h4 className="text-xl font-bold text-indigo-400">01. SHA-512 Salting</h4>
-                <p className="text-slate-400">Every user ID is passed through a multi-pass salt-and-hash algorithm, making reverse-engineering impossible.</p>
-              </div>
-              <div className="space-y-4">
-                <h4 className="text-xl font-bold text-indigo-400">02. Ephemeral Sockets</h4>
-                <p className="text-slate-400">Connection tokens expire every 15 minutes, ensuring that long-term session hijacking is a non-threat.</p>
-              </div>
-              <div className="space-y-4">
-                <h4 className="text-xl font-bold text-indigo-400">03. Polymorphic UI</h4>
-                <p className="text-sm text-slate-400 font-mono italic">"The UI adapts to your anonymity level, showing or hiding features based on your chosen privacy tier."</p>
-              </div>
-              <div className="space-y-4">
-                <h4 className="text-xl font-bold text-indigo-400">04. Distributed Nodes</h4>
-                <p className="text-slate-400">Data is sharded across multiple global nodes, so no single government or entity can seize the database.</p>
-              </div>
+            <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-indigo-400">
+              Under the Hood
+            </p>
+
+            <h2 className="mb-10 text-4xl font-black tracking-tight text-white sm:text-6xl">
+              THE TECH
+              <br />
+              BEHIND THE MASK.
+            </h2>
+
+            <div className="grid gap-8 sm:grid-cols-2">
+              {technicalFeatures.map((feature) => (
+                <div key={feature.title} className="space-y-4">
+                  <h4 className="text-lg font-bold text-indigo-400 sm:text-xl">
+                    {feature.title}
+                  </h4>
+                  <p className="leading-relaxed text-slate-400">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl flex flex-col justify-between">
-            <div className="text-6xl font-bold text-white">99.9%</div>
-            <div className="text-slate-400 uppercase tracking-widest text-xs">Encryption Uptime</div>
-            <div className="mt-8 pt-8 border-t border-white/10">
-              <p className="text-sm italic">"Security is not a feature; it's our entire existence. We don't just hide your data—we make it nonexistent to the prying eye."</p>
-              <p className="mt-4 font-bold text-white">— CTO, Ghostly Protocol</p>
+
+          <div className="flex flex-col justify-between rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl sm:p-8">
+            <div>
+              <div className="text-4xl font-bold text-white sm:text-6xl">
+                Privacy
+              </div>
+              <div className="mt-3 text-xs uppercase tracking-widest text-slate-400">
+                Is a design priority
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-white/10 pt-8">
+              <p className="text-sm italic leading-relaxed text-slate-300">
+                &quot;Security is not just a feature. It is a responsibility
+                built into every part of the experience.&quot;
+              </p>
+              <p className="mt-4 font-bold text-white">
+                — The Pure Voice Team
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- SECTION 5: GLOBAL IMPACT (Stats) --- */}
-      <section className="py-32 border-y border-slate-900 bg-black">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-between gap-12">
-          {[
-            { val: "50M+", label: "Messages" },
-            { val: "180", label: "Countries" },
-            { val: "0", label: "Data Breaches" },
-            { val: "100%", label: "Privacy" }
-          ].map((stat, i) => (
-            <div key={i} className="flex flex-col">
-              <span className="text-6xl font-black text-white">{stat.val}</span>
-              <span className="text-indigo-500 uppercase tracking-widest text-sm font-bold">{stat.label}</span>
+      {/* SECTION 5: STATS */}
+      <section className="border-y border-slate-900 bg-black py-20 md:py-28">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-4 sm:px-6 md:grid-cols-4 md:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="flex flex-col gap-2">
+              <span className="break-words text-3xl font-black text-white sm:text-5xl lg:text-6xl">
+                {stat.value}
+              </span>
+              <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 sm:text-sm">
+                {stat.label}
+              </span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* --- SECTION 6: FAQ (Content Heavy) --- */}
-      <section className="py-32 max-w-4xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-white mb-16">Frequently Asked Questions</h2>
+      {/* SECTION 6: FAQ */}
+      <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6 md:py-32">
+        <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-indigo-400">
+          Need to Know
+        </p>
+
+        <h2 className="mb-10 text-3xl font-bold text-white sm:mb-16 sm:text-4xl">
+          Frequently Asked Questions
+        </h2>
+
         <div className="space-y-4">
-          {[
-            { q: "Can my employer find out who I am?", a: "No. Our enterprise version uses a 'blind-token' system where the employer only receives the data packet, with no link to the employee directory." },
-            { q: "How do you handle illegal content?", a: "Our automated AI shield scans for keywords and patterns that violate international law before the message is hashed. We protect privacy, not crime." },
-            { q: "Is the platform open source?", a: "The core encryption engine is open-source. We believe in 'Security through Transparency'—experts can verify our claims anytime." },
-            { q: "How do you make money if you don't sell data?", a: "We operate on a 'Premium Anonymity' model. Power users and companies pay for advanced tools, but the privacy remains free for everyone." }
-          ].map((faq, i) => (
-            <details key={i} className="group border border-slate-800 bg-slate-900/50 rounded-2xl overflow-hidden">
-              <summary className="p-6 text-xl font-bold text-white cursor-pointer list-none flex justify-between items-center group-open:bg-indigo-600 transition-colors">
-                {faq.q}
-                <span className="text-2xl font-light">{"+"}</span>
+          {faqs.map((faq) => (
+            <details
+              key={faq.q}
+              className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-base font-bold text-white transition-colors hover:bg-indigo-600/20 sm:p-6 sm:text-xl">
+                <span>{faq.q}</span>
+                <span className="shrink-0 text-2xl font-light transition-transform group-open:rotate-45">
+                  +
+                </span>
               </summary>
-              <div className="p-8 text-slate-400 leading-relaxed bg-slate-900">
+
+              <div className="bg-slate-900 p-5 leading-relaxed text-slate-400 sm:p-8">
                 {faq.a}
               </div>
             </details>
@@ -210,23 +388,32 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* --- FINAL CTA --- */}
-      <section className="py-40 text-center relative">
-        <div className="absolute inset-0 bg-indigo-600/10 blur-[150px] rounded-full" />
-        <div className="relative z-10 px-6">
-          <h2 className="text-7xl font-black text-white mb-10 tracking-tighter">SAY THE <br /> UNSAYABLE.</h2>
-          <motion.button 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="px-12 py-6 bg-indigo-600 text-white font-black rounded-full shadow-[0_0_40px_rgba(79,70,229,0.4)]"
+      {/* FINAL CTA */}
+      <section className="relative overflow-hidden py-24 text-center sm:py-32 md:py-40">
+        <div className="pointer-events-none absolute inset-0 rounded-full bg-indigo-600/10 blur-[100px] sm:blur-[150px]" />
+
+        <div className="relative z-10 px-4 sm:px-6">
+          <h2 className="text-5xl font-black tracking-tighter text-white sm:text-7xl md:text-8xl">
+            SAY THE
+            <br />
+            <span className="text-indigo-500">UNSAYABLE.</span>
+          </h2>
+
+          <motion.a
+            href="/sign-up"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="mt-10 inline-flex max-w-full items-center justify-center rounded-full bg-indigo-600 px-7 py-4 text-center text-sm font-black text-white shadow-[0_0_40px_rgba(79,70,229,0.3)] transition-colors hover:bg-indigo-500 sm:px-12 sm:py-6 sm:text-base"
           >
             CREATE YOUR SECRET KEY
-          </motion.button>
-          <p className="mt-8 text-slate-500 uppercase text-xs tracking-widest font-bold">No Email Required. No Credit Card. Just You.</p>
+          </motion.a>
+
+          <p className="mt-8 text-xs font-bold uppercase tracking-widest text-slate-500">
+            Your Voice. Your Space. Your Choice.
+          </p>
         </div>
       </section>
-
-    </div>
+    </main>
   );
 };
 
